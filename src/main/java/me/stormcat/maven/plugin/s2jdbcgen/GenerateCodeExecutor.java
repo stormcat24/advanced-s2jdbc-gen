@@ -22,6 +22,7 @@ import me.stormcat.maven.plugin.s2jdbcgen.meta.Table;
 import me.stormcat.maven.plugin.s2jdbcgen.util.ConnectionUtil;
 import me.stormcat.maven.plugin.s2jdbcgen.util.DriverManagerUtil;
 import me.stormcat.maven.plugin.s2jdbcgen.util.FileUtil;
+import me.stormcat.maven.plugin.s2jdbcgen.util.StringUtil;
 import me.stormcat.maven.plugin.s2jdbcgen.util.VelocityUtil;
 
 import org.seasar.util.sql.PreparedStatementUtil;
@@ -67,6 +68,16 @@ public class GenerateCodeExecutor {
         } finally {
             ResultSetUtil.close(resultSet);
             StatementUtil.close(ps);
+        }
+        
+        for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
+            Table table = entry.getValue().getTable();
+            for (Column column : table.getColumnList()) {
+                String referencedTable = column.getReferenceTableName();
+                if (StringUtil.isNotBlank(referencedTable) && metaMap.containsKey(referencedTable)) {
+                    column.setReferencedModel(metaMap.get(referencedTable));
+                }
+            }
         }
         
         // generate code

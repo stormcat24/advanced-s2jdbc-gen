@@ -1,7 +1,6 @@
 package ${servicePackage};
 
 import java.util.List;
-import javax.annotation.Generated;
 
 import ${entityPackage}.${meta.entityName};
 

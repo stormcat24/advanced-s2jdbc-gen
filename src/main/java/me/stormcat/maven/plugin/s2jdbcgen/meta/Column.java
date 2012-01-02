@@ -6,7 +6,10 @@ package me.stormcat.maven.plugin.s2jdbcgen.meta;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import me.stormcat.maven.plugin.s2jdbcgen.ModelMeta;
 import me.stormcat.maven.plugin.s2jdbcgen.Constants.MappedType;
 import me.stormcat.maven.plugin.s2jdbcgen.util.StringUtil;
 
@@ -43,6 +46,8 @@ public class Column {
     private final String fieldName;
     
     private final Set<String> primaryKeySet;
+    
+    private ModelMeta referencedModel;
     
     public Column(ResultSet resultSet, Set<String> primaryKeySet) {
         try {
@@ -240,7 +245,7 @@ public class Column {
     }
     
     public String getColumnAnnotation() {
-        StringBuilder builder = new StringBuilder("@Column(");
+        StringBuilder builder = new StringBuilder("@javax.persistence.Column(");
         // nullable
         builder.append("nullable = ");
         builder.append(nullable);
@@ -268,4 +273,21 @@ public class Column {
         return primaryKey;
     }
     
+    public String getReferenceTableName() {
+        if (StringUtil.isBlank(remarks)) {
+            return null;
+        }
+        Pattern pattern = Pattern.compile("\\[=>(.+)\\]");
+        Matcher matcher = pattern.matcher(remarks);
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    public ModelMeta getReferencedModel() {
+        return referencedModel;
+    }
+
+    public void setReferencedModel(ModelMeta referencedModel) {
+        this.referencedModel = referencedModel;
+    }
+
 }

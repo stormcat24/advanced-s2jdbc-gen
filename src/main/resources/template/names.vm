@@ -24,7 +24,7 @@ public class ${meta.namesName} {
     /**
      * @author advanced-s2jdbc-gen
      */
-    public static class _${meta.namesName} extends PropertyName<meta.table.entityName> {
+    public static class _${meta.namesName} extends PropertyName<${meta.entityName}> {
         /**
          * インスタンスを構築します。
          */

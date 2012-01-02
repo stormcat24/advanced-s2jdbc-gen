@@ -12,5 +12,7 @@ import javax.persistence.Table;
 @Table(name = "${meta.table.name}")
 public class ${meta.entityName} extends ${meta.abstractEntityName} {
 
+    private static final long serialVersionUID = 1L;
+
     // @OneToMany area
 }

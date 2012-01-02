@@ -1,0 +1,18 @@
+package ${servicePackage};
+
+import org.seasar.extension.jdbc.service.S2AbstractService;
+
+/**
+ * サービスの抽象クラスです。
+ * 
+ * @param <ENTITY>
+ *            エンティティの型 
+ * @author advanced-s2jdbc-gen
+ */
+public abstract class AbstractService<ENTITY> extends S2AbstractService<ENTITY> {
+
+    public int deleteLogical(ENTITY entity) {
+        // 論理削除
+        return 0;
+    }
+}
