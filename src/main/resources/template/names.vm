@@ -1,0 +1,62 @@
+package ${entityPackage};
+
+import org.seasar.extension.jdbc.name.PropertyName;
+
+/**
+ *
+ * @author advanced-s2jdbc-gen
+ * 
+ */
+public class ${meta.namesName} {
+
+#foreach(${column} in ${meta.table.columnList})
+    /**
+     * ${column.columnName}のプロパティ名を返します。
+     *
+     * @return ${column.columnName}のプロパティ名
+     */
+    public static PropertyName<${column.javaType}> ${column.fieldName}() {
+        return new PropertyName<${column.javaType}>("${column.fieldName}");
+    }
+ 
+#end
+
+    /**
+     * @author advanced-s2jdbc-gen
+     */
+    public static class _${meta.namesName} extends PropertyName<meta.table.entityName> {
+        /**
+         * インスタンスを構築します。
+         */
+        public _${meta.namesName}() {
+        }
+
+        /**
+         * インスタンスを構築します。
+         * @param name 名前
+         */
+        public _${meta.namesName}(final String name) {
+            super(name);
+        }
+
+        /**
+         * インスタンスを構築します。
+         * @param parent 親
+         * @param name 名前
+         */
+        public _${meta.namesName}(final PropertyName<?> parent, final String name) {
+            super(parent, name);
+        }
+
+#foreach(${column} in ${meta.table.columnList})
+        /**
+         * ${column.fieldName}のプロパティ名を返します。
+         * @return ${column.fieldName}のプロパティ名
+         */
+        public PropertyName<${column.javaType}> ${column.fieldName}() {
+            return new PropertyName<${column.javaType}>(this, "${column.fieldName}");
+        }
+
+#end
+    }
+}

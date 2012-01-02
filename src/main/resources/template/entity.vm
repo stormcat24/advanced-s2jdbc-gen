@@ -1,0 +1,16 @@
+package ${entityPackage};
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+/**
+ *
+ * @author advanced-s2jdbc-gen
+ * 
+ */
+@Entity
+@Table(name = "${meta.table.name}")
+public class ${meta.entityName} extends ${meta.abstractEntityName} {
+
+    // @OneToMany area
+}

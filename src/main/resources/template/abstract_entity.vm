@@ -1,0 +1,33 @@
+package ${entityPackage};
+
+import java.io.Serializable;
+
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Column;
+
+/**
+ *
+ * @author advanced-s2jdbc-gen
+ * 
+ */
+@MappedSuperclass
+public abstract class ${meta.abstractEntityName} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach(${column} in ${meta.table.columnList})
+    /** ${column.columnName} */
+#if(${column.primaryKey})
+    @Id
+#end
+#if(${column.autoincrement})
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+#end
+    ${column.columnAnnotation}
+    public ${column.javaType} ${column.fieldName};
+
+#end
+
+}

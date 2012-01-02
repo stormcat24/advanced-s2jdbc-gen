@@ -1,0 +1,31 @@
+package ${servicePackage};
+
+import java.util.List;
+import javax.annotation.Generated;
+
+import ${entityPackage}.${meta.entityName};
+
+import static org.seasar.extension.jdbc.operation.Operations.*;
+
+/**
+ * {@link ${entityPackage}.${meta.entityName}}のサービスクラスです。
+ *
+ */
+public abstract class ${meta.abstractServiceName} extends AbstractService<${meta.entityName}> {
+
+    // インデックスを基に自動生成されたメソッド START
+#foreach(${index} in ${meta.table.indexList})
+    /**
+     * ${index.name}で検索します。
+     * @return　該当するエンティティのList
+     */
+    public List<${meta.entityName}> ${index.findMethodName}(${index.signature}) {
+        return select().
+            where(
+                ${index.whereClause}
+            ).getResultList();
+    }
+
+#end
+    // インデックスを基に自動生成されたメソッド END
+}
