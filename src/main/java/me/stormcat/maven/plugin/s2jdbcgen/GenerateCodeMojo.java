@@ -16,13 +16,8 @@ package me.stormcat.maven.plugin.s2jdbcgen;
  * limitations under the License.
  */
 
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * Goal which touches a timestamp file.
@@ -39,8 +34,13 @@ public class GenerateCodeMojo extends AbstractMojo {
      * @parameter expression="${project.build.directory}"
      * @required
      */
-    private File outputDirectory;
+    private String genDir;
 
+    /**
+     * @required
+     */
+    private String host;
+    
     /**
      * @required
      */
@@ -55,36 +55,17 @@ public class GenerateCodeMojo extends AbstractMojo {
      * @required
      */
     private String password;
+    
+    /**
+     * @required
+     */
+    private String rootPackage;
+    
+    private String delFlagName;
 
     public void execute() throws MojoExecutionException {
-        System.out.println("MyMojo.execute()************************");
-        
-        
-        
-        
-//        File f = outputDirectory;
-//
-//        if (!f.exists()) {
-//            f.mkdirs();
-//        }
-//
-//        File touch = new File(f, "touch.txt");
-//
-//        FileWriter w = null;
-//        try {
-//            w = new FileWriter(touch);
-//
-//            w.write("touch.txt");
-//        } catch (IOException e) {
-//            throw new MojoExecutionException("Error creating file " + touch, e);
-//        } finally {
-//            if (w != null) {
-//                try {
-//                    w.close();
-//                } catch (IOException e) {
-//                    // ignore
-//                }
-//            }
-//        }
+        GenerateCodeExecutor executor = new GenerateCodeExecutor(genDir, rootPackage, host, schema, user, password);
+        executor.setDelFlagName(delFlagName);
+        executor.execute();
     }
 }

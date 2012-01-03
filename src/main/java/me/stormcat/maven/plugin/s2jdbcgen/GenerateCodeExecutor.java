@@ -7,13 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import me.stormcat.maven.plugin.s2jdbcgen.factory.ColumnListBuilder;
 import me.stormcat.maven.plugin.s2jdbcgen.meta.Column;
@@ -37,12 +36,30 @@ public class GenerateCodeExecutor {
     
     private static final String SHOW_TABLES = "SHOW TABLES";
     
-    private static final String GEN_DIR = "/develop/workspace_java/advanced-s2jdbc-gen/target/gen";
+    private final String genDir;
     
-    private static final String ROOT_PACKAGE = "me.stormcat.sample";
+    private final String rootPackage;
+    
+    private final String host;
+    
+    private final String schema;
+    
+    private final String user;
+    
+    private final String password;
+    
+    private String delFlagName;
+    
+    public GenerateCodeExecutor(String genDir, String rootPackage, String host, String schema, String user, String password) {
+        this.genDir = genDir;
+        this.rootPackage = rootPackage;
+        this.host = host;
+        this.schema = schema;
+        this.user = user;
+        this.password = password;
+    }
     
     public void execute() {
-        String schema = "iroots";
         String tableNameColumn = String.format("Tables_in_%s", schema);
         
         DriverManagerUtil.registerDriver("com.mysql.jdbc.Driver");
@@ -53,7 +70,7 @@ public class GenerateCodeExecutor {
         
         Map<String, ModelMeta> metaMap = new LinkedHashMap<String, ModelMeta>();
         try {
-            connection = DriverManagerUtil.getConnection(String.format("jdbc:mysql://localhost:3306/%s", schema), "root", "root");
+            connection = DriverManagerUtil.getConnection(String.format("jdbc:mysql://%s/%s", host, schema), user, password);
             ps = ConnectionUtil.getPreparedStatement(connection, SHOW_TABLES);        
             DatabaseMetaData metaData = connection.getMetaData();
             
@@ -81,15 +98,15 @@ public class GenerateCodeExecutor {
         }
         
         // generate code
-        String rootPath = String.format("%s/%s", GEN_DIR, ROOT_PACKAGE.replace(".", "/"));
+        String rootPath = String.format("%s/%s", genDir, rootPackage.replace(".", "/"));
         String entityPath = String.format("%s/%s", rootPath, "entity");
         String servicePath = String.format("%s/%s", rootPath, "service");
         FileUtil.mkdirsIfNotExists(rootPath);
         FileUtil.mkdirsIfNotExists(entityPath);
         FileUtil.mkdirsIfNotExists(servicePath);
         
-        String entityPackage = String.format("%s.entity", ROOT_PACKAGE);
-        String servicePackage = String.format("%s.service", ROOT_PACKAGE);
+        String entityPackage = String.format("%s.entity", rootPackage);
+        String servicePackage = String.format("%s.service", rootPackage);
         
         for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
             ModelMeta modelMeta = entry.getValue();
@@ -172,12 +189,16 @@ public class GenerateCodeExecutor {
             FileUtil.writeStringToFile(file, entityContents, "UTF-8");
         }
     }
+    
+    public void setDelFlagName(String delFlagName) {
+        this.delFlagName = delFlagName;
+    }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        new GenerateCodeExecutor().execute();
+        new GenerateCodeExecutor("/develop/workspace_java/advanced-s2jdbc-gen/target/gen", "me.stormcat.sample", "localhost:3306", "sample", "root", "root").execute();
     }
 
 }
