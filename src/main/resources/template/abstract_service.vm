@@ -13,6 +13,59 @@ import static org.seasar.extension.jdbc.operation.Operations.*;
  */
 public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceName}<${meta.entityName}> {
 
+#foreach(${column} in ${meta.table.columnList})
+#if(${delFlag})
+#if(${column.columnName} == ${delFlag.name})
+    /**
+     * 有効な全てのエンティティを検索します。
+     * @return 全てのエンティティ
+     */
+    public List<${meta.entityName}> findAllEnabled() {
+        return select().
+            where(
+#if(${column.javaType} == "Integer")
+#if(${delFlag.delValue})
+                eq(${column.fieldName}(), 0)
+#else
+                eq(${column.fieldName}(), 1)
+#end
+#else
+#if(${delFlag.delValue})
+                eq(${column.fieldName}(), false)
+#else
+                eq(${column.fieldName}(), true)
+#end
+#end
+            ).getResultList();
+    }
+
+    /**
+     * 無効な全てのエンティティを検索します。
+     * @return 全てのエンティティ
+     */
+    public List<${meta.entityName}> findAllDisabled() {
+        return select().
+            where(
+#if(${column.javaType} == "Integer")
+#if(${delFlag.delValue})
+                eq(${column.fieldName}(), 1)
+#else
+                eq(${column.fieldName}(), 0)
+#end
+#else
+#if(${delFlag.delValue})
+                eq(${column.fieldName}(), true)
+#else
+                eq(${column.fieldName}(), false)
+#end
+#end
+            ).getResultList();
+    }
+
+#end
+#end
+#end
+
     // インデックスを基に自動生成されたメソッド START
 #foreach(${index} in ${meta.table.indexList})
     /**

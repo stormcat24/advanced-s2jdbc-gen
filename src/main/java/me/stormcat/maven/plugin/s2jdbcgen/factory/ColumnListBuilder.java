@@ -12,6 +12,7 @@ import org.seasar.util.sql.ResultSetUtil;
 
 import com.google.common.collect.ImmutableList;
 
+import me.stormcat.maven.plugin.s2jdbcgen.DelFlag;
 import me.stormcat.maven.plugin.s2jdbcgen.MetaBuilder;
 import me.stormcat.maven.plugin.s2jdbcgen.meta.Column;
 
@@ -27,6 +28,8 @@ public class ColumnListBuilder implements MetaBuilder<List<Column>> {
     private final ResultSet resultSet;
     
     private final Set<String> primaryKeySet;
+    
+    private DelFlag delFlag;
     
     public ColumnListBuilder(ResultSet resultSet, Set<String> primaryKeySet) {
         this.columnList = new ArrayList<Column>();
@@ -44,6 +47,14 @@ public class ColumnListBuilder implements MetaBuilder<List<Column>> {
         }
         
         return ImmutableList.copyOf(columnList);
+    }
+
+    public DelFlag getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(DelFlag delFlag) {
+        this.delFlag = delFlag;
     }
     
 }

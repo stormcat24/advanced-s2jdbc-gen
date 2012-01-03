@@ -139,6 +139,7 @@ public class GenerateCodeExecutor {
             params.put("entityPackage", entityPackage);
             params.put("servicePackage", servicePackage);
             params.put("meta", modelMeta);
+            params.put("delFlag", delFlag);
             params.put("abstractS2ServiceName", abstractS2ServiceName);
             
             writeContentsToFile(abstractEntityFile, "template/abstract_entity.vm", params, true);
@@ -154,6 +155,7 @@ public class GenerateCodeExecutor {
         try {
             Set<String> primaryKeySet = getPrimaryKeySet(metaData, schema, tableName);
             ColumnListBuilder columnListBuilder = new ColumnListBuilder(metaData.getColumns(null, schema, tableName, "%"), primaryKeySet);
+//            columnListBuilder.setDelFlag(delFlag);
             List<Column> columnList = columnListBuilder.build();
 
             ResultSet rs = metaData.getIndexInfo("", schema, tableName, false, false);
