@@ -34,7 +34,7 @@ public class ModelMeta {
         this.serviceName = String.format("%sService", this.entityName);
         this.abstractServiceName = String.format("Abstract%sService", this.entityName);
         this.namesName = String.format("%sNames", entityName);
-        this.fieldName = String.format("%s%s", entityName.substring(0, 1), entityName.subSequence(1, entityName.length()));
+        this.fieldName = String.format("%s%s", entityName.substring(0, 1).toLowerCase(), entityName.substring(1, entityName.length()));
     }
 
     public Table getTable() {

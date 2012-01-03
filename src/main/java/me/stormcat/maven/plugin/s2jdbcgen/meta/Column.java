@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.stormcat.maven.plugin.s2jdbcgen.ModelMeta;
+import me.stormcat.maven.plugin.s2jdbcgen.Constants.ColumnMetaColumn;
 import me.stormcat.maven.plugin.s2jdbcgen.Constants.MappedType;
 import me.stormcat.maven.plugin.s2jdbcgen.util.StringUtil;
 
@@ -45,38 +46,34 @@ public class Column {
     
     private final String fieldName;
     
-    private final Set<String> primaryKeySet;
-    
     private ModelMeta referencedModel;
     
     public Column(ResultSet resultSet, Set<String> primaryKeySet) {
         try {
-            tableCat = resultSet.getString("TABLE_CAT");
-            tableSchem = resultSet.getString("TABLE_SCHEM");
-            tableName = resultSet.getString("TABLE_NAME");
-            columnName = resultSet.getString("COLUMN_NAME");
-            dataType = resultSet.getInt("DATA_TYPE");
-            typeName = resultSet.getString("TYPE_NAME");
-            columnSize = resultSet.getInt("COLUMN_SIZE");
-            bufferLength = resultSet.getInt("BUFFER_LENGTH");
-            decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
-            numPrecRadix = resultSet.getInt("NUM_PREC_RADIX");
-            nullable = resultSet.getBoolean("NULLABLE");
-            remarks = resultSet.getString("REMARKS");
-            columnDef = resultSet.getString("COLUMN_DEF");
-            sqlDataType = resultSet.getInt("SQL_DATA_TYPE");
-            sqlDatetimeSub = resultSet.getString("SQL_DATETIME_SUB");
-            charOctetLength = resultSet.getInt("CHAR_OCTET_LENGTH");
-            ordinalPosition = resultSet.getInt("ORDINAL_POSITION");
-            scopeCatalog = resultSet.getString("SCOPE_CATALOG");
-            scopeSchema = resultSet.getString("SCOPE_SCHEMA");
-            scopeTable = resultSet.getString("SCOPE_TABLE");
-            sourceDataType = resultSet.getInt("SOURCE_DATA_TYPE");
-            autoincrement = resultSet.getBoolean("IS_AUTOINCREMENT");
+            tableCat = resultSet.getString(ColumnMetaColumn.TABLE_CAT);
+            tableSchem = resultSet.getString(ColumnMetaColumn.TABLE_SCHEM);
+            tableName = resultSet.getString(ColumnMetaColumn.TABLE_NAME);
+            columnName = resultSet.getString(ColumnMetaColumn.COLUMN_NAME);
+            dataType = resultSet.getInt(ColumnMetaColumn.DATA_TYPE);
+            typeName = resultSet.getString(ColumnMetaColumn.TYPE_NAME);
+            columnSize = resultSet.getInt(ColumnMetaColumn.COLUMN_SIZE);
+            bufferLength = resultSet.getInt(ColumnMetaColumn.BUFFER_LENGTH);
+            decimalDigits = resultSet.getInt(ColumnMetaColumn.DECIMAL_DIGITS);
+            numPrecRadix = resultSet.getInt(ColumnMetaColumn.NUM_PREC_RADIX);
+            nullable = resultSet.getBoolean(ColumnMetaColumn.NULLABLE);
+            remarks = resultSet.getString(ColumnMetaColumn.REMARKS);
+            columnDef = resultSet.getString(ColumnMetaColumn.COLUMN_DEF);
+            sqlDataType = resultSet.getInt(ColumnMetaColumn.SQL_DATA_TYPE);
+            sqlDatetimeSub = resultSet.getString(ColumnMetaColumn.SQL_DATETIME_SUB);
+            charOctetLength = resultSet.getInt(ColumnMetaColumn.CHAR_OCTET_LENGTH);
+            ordinalPosition = resultSet.getInt(ColumnMetaColumn.ORDINAL_POSITION);
+            scopeCatalog = resultSet.getString(ColumnMetaColumn.SCOPE_CATALOG);
+            scopeSchema = resultSet.getString(ColumnMetaColumn.SCOPE_SCHEMA);
+            scopeTable = resultSet.getString(ColumnMetaColumn.SCOPE_TABLE);
+            sourceDataType = resultSet.getInt(ColumnMetaColumn.SOURCE_DATA_TYPE);
+            autoincrement = resultSet.getBoolean(ColumnMetaColumn.IS_AUTOINCREMENT);
             
-            this.primaryKeySet = primaryKeySet;
             primaryKey = primaryKeySet.contains(columnName);
-            
             fieldName = StringUtil.camelizeMethod(columnName);
         } catch (Exception e) {
             throw new RuntimeException(e);
