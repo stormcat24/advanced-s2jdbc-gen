@@ -47,12 +47,8 @@ public class Index {
         for (int i = 0; i < columnList.size(); i++) {
             IndexColumn indexColumn = columnList.get(i);
             String s = indexColumn.getReferencedColumn().getFieldName();
-            if (i == 0) {
-                builder.append(s.substring(0, 1).toUpperCase());
-                builder.append(s.substring(1, s.length()));
-            } else {
-                builder.append(s);
-            }
+            builder.append(s.substring(0, 1).toUpperCase());
+            builder.append(s.substring(1, s.length()));
             if (i < columnList.size() - 1) {
                 builder.append("And");
             }
