@@ -1,6 +1,7 @@
 package ${servicePackage};
 
 import org.seasar.extension.jdbc.service.S2AbstractService;
+import java.lang.reflect.Field;
 
 /**
  * サービスの抽象クラスです。
@@ -9,10 +10,55 @@ import org.seasar.extension.jdbc.service.S2AbstractService;
  *            エンティティの型 
  * @author advanced-s2jdbc-gen
  */
-public abstract class AbstractService<ENTITY> extends S2AbstractService<ENTITY> {
+public abstract class ${abstractS2ServiceName}<ENTITY> extends S2AbstractService<ENTITY> {
 
-    public int deleteLogical(ENTITY entity) {
-        // 論理削除
-        return 0;
+#if(${delFlag})
+    /**
+     * 論理的に有効化、無効化を切り替えて更新します。
+     * @param entity エンティティ
+     * @param enable {@code true}:有効 / {@code false}:無効（論理削除）
+     * @return 更新した行数
+     */
+    public int toggleEnable(ENTITY entity, boolean enable) {
+        Field field = getDelFlagField();
+        setValue(entity, field, enable);
+        return update(entity);
     }
+    
+    private Field getDelFlagField() {
+        try {
+            Field field = entityClass.getField("valid");
+            field.setAccessible(true);
+            return field;
+        } catch (Exception e) {
+            throw new RuntimeException("validが存在しないか、アクセスできません。", e);
+        }
+    }
+    
+    
+    private void setValue(ENTITY entity, Field field, boolean enable) {
+        Class<?> type = field.getType();
+        Object value = null;
+        if (type.equals(Integer.class)) {
+#if(${delFlag.delValue})
+            value = enable ? 0 : 1;
+#else
+            value = enable ? 1 : 0;
+#end
+        } else if (type.equals(Boolean.class)) {
+#if(${delFlag.delValue})
+            value = !enable;
+#else
+            value = enable;
+#end
+        } else {
+            throw new RuntimeException(String.format("%sはフラグの型としてサポートされていません。", type.getName()));
+        }
+        try {
+            field.set(entity, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+#end
 }

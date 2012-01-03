@@ -29,43 +29,49 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class GenerateCodeMojo extends AbstractMojo {
     
     /**
-     * Location of the file.
-     * 
-     * @parameter expression="${project.build.directory}"
+     * @parameter
      * @required
      */
     private String genDir;
 
     /**
+     * @parameter
      * @required
      */
     private String host;
     
     /**
+     * @parameter
      * @required
      */
     private String schema;
     
     /**
+     * @parameter
      * @required
      */
     private String user;
     
     /**
+     * @parameter
      * @required
      */
     private String password;
     
     /**
+     * @parameter
      * @required
      */
     private String rootPackage;
     
-    private String delFlagName;
-
+    /**
+     * @parameter
+     */
+    private DelFlag delFlag;
+    
     public void execute() throws MojoExecutionException {
         GenerateCodeExecutor executor = new GenerateCodeExecutor(genDir, rootPackage, host, schema, user, password);
-        executor.setDelFlagName(delFlagName);
+        executor.setDelFlag(delFlag);
         executor.execute();
     }
 }

@@ -4,13 +4,14 @@ import java.util.List;
 
 import ${entityPackage}.${meta.entityName};
 
+import static ${entityPackage}.${meta.namesName}.*;
 import static org.seasar.extension.jdbc.operation.Operations.*;
 
 /**
  * {@link ${entityPackage}.${meta.entityName}}のサービスクラスです。
  *
  */
-public abstract class ${meta.abstractServiceName} extends AbstractService<${meta.entityName}> {
+public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceName}<${meta.entityName}> {
 
     // インデックスを基に自動生成されたメソッド START
 #foreach(${index} in ${meta.table.indexList})

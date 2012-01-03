@@ -27,6 +27,7 @@
 				<configuration>
 					<goalPrefix>advanced-s2jdbc-gen</goalPrefix>
 				</configuration>
+				<!-- 
 				<executions>
 					<execution>
 						<id>generated-helpmojo</id>
@@ -35,6 +36,7 @@
 						</goals>
 					</execution>
 				</executions>
+				 -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -48,7 +48,7 @@ public class GenerateCodeExecutor {
     
     private final String password;
     
-    private String delFlagName;
+    private DelFlag delFlag;
     
     public GenerateCodeExecutor(String genDir, String rootPackage, String host, String schema, String user, String password) {
         this.genDir = genDir;
@@ -108,6 +108,18 @@ public class GenerateCodeExecutor {
         String entityPackage = String.format("%s.entity", rootPackage);
         String servicePackage = String.format("%s.service", rootPackage);
         
+        
+        String abstractS2ServiceName = "EnhancedS2AbstractService";
+        String parentServicePath = String.format("%s/%s.java", servicePath, abstractS2ServiceName);
+        File parentServiceFile = new File(parentServicePath);
+        Map<String, Object> parentParams = new HashMap<String, Object>();
+        parentParams.put("entityPackage", entityPackage);
+        parentParams.put("servicePackage", servicePackage);
+        parentParams.put("delFlag", delFlag);
+        parentParams.put("abstractS2ServiceName", abstractS2ServiceName);
+        writeContentsToFile(parentServiceFile, "template/parent_service.vm", parentParams, true);
+        
+        
         for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
             ModelMeta modelMeta = entry.getValue();
             
@@ -127,6 +139,7 @@ public class GenerateCodeExecutor {
             params.put("entityPackage", entityPackage);
             params.put("servicePackage", servicePackage);
             params.put("meta", modelMeta);
+            params.put("abstractS2ServiceName", abstractS2ServiceName);
             
             writeContentsToFile(abstractEntityFile, "template/abstract_entity.vm", params, true);
             writeContentsToFile(entityFile, "template/entity.vm", params, false);
@@ -190,15 +203,20 @@ public class GenerateCodeExecutor {
         }
     }
     
-    public void setDelFlagName(String delFlagName) {
-        this.delFlagName = delFlagName;
+    public void setDelFlag(DelFlag delFlag) {
+        this.delFlag = delFlag;
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        new GenerateCodeExecutor("/develop/workspace_java/advanced-s2jdbc-gen/target/gen", "me.stormcat.sample", "localhost:3306", "sample", "root", "root").execute();
+        GenerateCodeExecutor executor = new GenerateCodeExecutor("/develop/workspace_java/advanced-s2jdbc-gen/target/gen", "me.stormcat.sample", "localhost:3306", "sample", "root", "root");
+        DelFlag delFlag = new DelFlag();
+        delFlag.setName("valid");
+        delFlag.setDelValue(false);
+        executor.setDelFlag(delFlag);
+        executor.execute();
     }
 
 }
