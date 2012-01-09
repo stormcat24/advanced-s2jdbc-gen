@@ -271,6 +271,7 @@ public class Column {
     }
     
     public String getReferenceTableName() {
+        // TODO 外部キー実装
         if (StringUtil.isBlank(remarks)) {
             return null;
         }
@@ -285,6 +286,14 @@ public class Column {
 
     public void setReferencedModel(ModelMeta referencedModel) {
         this.referencedModel = referencedModel;
+    }
+    
+    public String getReferenceFieldName() {
+        if (referencedModel == null) {
+            return null;
+        }
+        return String.format("%sBy%s%s", referencedModel.getFieldName(), 
+                fieldName.substring(0, 1).toUpperCase(), fieldName.substring(1, fieldName.length()));
     }
 
 }

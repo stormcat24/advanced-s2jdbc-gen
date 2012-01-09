@@ -68,6 +68,19 @@ public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceNam
 
     // インデックスを基に自動生成されたメソッド START
 #foreach(${index} in ${meta.table.indexList})
+#if(${index.unique})
+    /**
+     * ${index.name}で検索します。
+     * <p>${index.name}はユニークインデックスです。
+     * @return　該当するエンティティのList
+     */
+    public ${meta.entityName} ${index.findMethodName}(${index.signature}) {
+        return select().
+            where(
+                ${index.whereClause}
+            ).getSingleResult();
+    }
+#else
     /**
      * ${index.name}で検索します。
      * @return　該当するエンティティのList
@@ -78,6 +91,7 @@ public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceNam
                 ${index.whereClause}
             ).getResultList();
     }
+#end
 
 #end
     // インデックスを基に自動生成されたメソッド END

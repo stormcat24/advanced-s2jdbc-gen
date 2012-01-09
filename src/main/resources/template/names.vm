@@ -23,12 +23,12 @@ public class ${meta.namesName} {
 #foreach(${column} in ${meta.table.columnList})
 #if(${column.referencedModel})
     /**
-     * ${column.referencedModel.fieldName}のプロパティ名を返します。
+     * ${column.referenceFieldName}のプロパティ名を返します。
      *
-     * @return ${column.referencedModel.fieldName}のプロパティ名
+     * @return ${column.referenceFieldName}のプロパティ名
      */
-    public static ${column.referencedModel.namesName}._${column.referencedModel.namesName} ${column.referencedModel.fieldName}() {
-        return new ${column.referencedModel.namesName}._${column.referencedModel.namesName}("${column.referencedModel.fieldName}");
+    public static ${column.referencedModel.namesName}._${column.referencedModel.namesName} ${column.referenceFieldName}() {
+        return new ${column.referencedModel.namesName}._${column.referencedModel.namesName}("${column.referenceFieldName}");
     }
 
 #end
@@ -74,11 +74,11 @@ public class ${meta.namesName} {
 #foreach(${column} in ${meta.table.columnList})
 #if(${column.referencedModel})
         /**
-         * ${column.referencedModel.fieldName}のプロパティ名を返します。
-         * @return ${column.referencedModel.fieldName}のプロパティ名
+         * ${column.referenceFieldName}のプロパティ名を返します。
+         * @return ${column.referenceFieldName}のプロパティ名
          */
-        public ${column.referencedModel.namesName}._${column.referencedModel.namesName} ${column.referencedModel.fieldName}() {
-            return new ${column.referencedModel.namesName}._${column.referencedModel.namesName}(this, "${column.referencedModel.fieldName}");
+        public ${column.referencedModel.namesName}._${column.referencedModel.namesName} ${column.referenceFieldName}() {
+            return new ${column.referencedModel.namesName}._${column.referencedModel.namesName}(this, "${column.referenceFieldName}");
         }
 
 #end

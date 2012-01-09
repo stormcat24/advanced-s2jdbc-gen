@@ -29,7 +29,7 @@ public abstract class ${meta.abstractEntityName} implements Serializable {
 #if(${column.referencedModel})
     @javax.persistence.ManyToOne
     @javax.persistence.JoinColumn(name = "${column.columnName}")
-    public ${column.referencedModel.entityName} ${column.referencedModel.fieldName};
+    public ${column.referencedModel.entityName} ${column.referenceFieldName};
 
 #end
 #end

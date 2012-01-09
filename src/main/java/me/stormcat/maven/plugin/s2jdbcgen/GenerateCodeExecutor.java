@@ -27,6 +27,8 @@ import me.stormcat.maven.plugin.s2jdbcgen.util.VelocityUtil;
 import org.seasar.util.sql.PreparedStatementUtil;
 import org.seasar.util.sql.ResultSetUtil;
 import org.seasar.util.sql.StatementUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -50,6 +52,8 @@ public class GenerateCodeExecutor {
     
     private DelFlag delFlag;
     
+    private static final Logger logger = LoggerFactory.getLogger(GenerateCodeExecutor.class);
+    
     public GenerateCodeExecutor(String genDir, String rootPackage, String host, String schema, String user, String password) {
         this.genDir = genDir;
         this.rootPackage = rootPackage;
@@ -68,6 +72,20 @@ public class GenerateCodeExecutor {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         
+        logger.info("-----[configuration]-----");
+        logger.info(String.format("genDir=%s", genDir));
+        logger.info(String.format("rootPackage=%s", rootPackage));
+        logger.info(String.format("host=%s", host));
+        logger.info(String.format("schema=%s", schema));
+        logger.info(String.format("user=%s", user));
+        logger.info(String.format("password=%s", password));
+        if (delFlag != null) {
+            logger.info(String.format("delFlag#name=%s", delFlag.getName()));
+            logger.info(String.format("delFlag#delValue=%s", delFlag.isDelValue()));
+        }
+        logger.info("-------------------------");
+        
+        logger.info(String.format("%s からのリバースを開始します。", schema));
         Map<String, ModelMeta> metaMap = new LinkedHashMap<String, ModelMeta>();
         try {
             connection = DriverManagerUtil.getConnection(String.format("jdbc:mysql://%s/%s", host, schema), user, password);
@@ -77,6 +95,7 @@ public class GenerateCodeExecutor {
             resultSet = PreparedStatementUtil.executeQuery(ps);
             while (ResultSetUtil.next(resultSet)) {
                 String tableName = resultSet.getString(tableNameColumn);
+                logger.info(String.format("%sから情報を取得しました。", tableName));
                 Table table = metaProcess(metaData, schema, tableName);
                 metaMap.put(tableName, new ModelMeta(table));
             }
@@ -92,7 +111,8 @@ public class GenerateCodeExecutor {
             for (Column column : table.getColumnList()) {
                 String referencedTable = column.getReferenceTableName();
                 if (StringUtil.isNotBlank(referencedTable) && metaMap.containsKey(referencedTable)) {
-                    column.setReferencedModel(metaMap.get(referencedTable));
+                    logger.info(String.format("%s.%sから%sへの関連を検出しました。", table.getName(), column.getColumnName(), referencedTable));
+                    column.setReferencedModel(metaMap.get(referencedTable.trim()));
                 }
             }
         }
@@ -118,7 +138,7 @@ public class GenerateCodeExecutor {
         parentParams.put("delFlag", delFlag);
         parentParams.put("abstractS2ServiceName", abstractS2ServiceName);
         writeContentsToFile(parentServiceFile, "template/parent_service.vm", parentParams, true);
-        
+        logger.info(String.format("%sを生成しました。", parentServicePath));
         
         for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
             ModelMeta modelMeta = entry.getValue();
@@ -142,6 +162,7 @@ public class GenerateCodeExecutor {
             params.put("delFlag", delFlag);
             params.put("abstractS2ServiceName", abstractS2ServiceName);
             
+            logger.info(String.format("*%sに関するファイルを生成します。", modelMeta.getTable().getName()));
             writeContentsToFile(abstractEntityFile, "template/abstract_entity.vm", params, true);
             writeContentsToFile(entityFile, "template/entity.vm", params, false);
             writeContentsToFile(namesFile, "template/names.vm", params, true);
@@ -155,7 +176,6 @@ public class GenerateCodeExecutor {
         try {
             Set<String> primaryKeySet = getPrimaryKeySet(metaData, schema, tableName);
             ColumnListBuilder columnListBuilder = new ColumnListBuilder(metaData.getColumns(null, schema, tableName, "%"), primaryKeySet);
-//            columnListBuilder.setDelFlag(delFlag);
             List<Column> columnList = columnListBuilder.build();
 
             ResultSet rs = metaData.getIndexInfo("", schema, tableName, false, false);
@@ -202,6 +222,9 @@ public class GenerateCodeExecutor {
         if (overwrite || !file.exists()) {
             String entityContents = VelocityUtil.merge(template, params);
             FileUtil.writeStringToFile(file, entityContents, "UTF-8");
+            logger.info(String.format(" |-%sを生成しました。", file.getName()));
+        } else {
+            logger.info(String.format(" |-%sは既に存在するので自動生成がスキップされました。", file.getName()));
         }
     }
     
