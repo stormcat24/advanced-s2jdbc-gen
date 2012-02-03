@@ -5,6 +5,7 @@ package me.stormcat.maven.plugin.s2jdbcgen.meta;
 
 import java.sql.ResultSet;
 import java.sql.Types;
+import java.util.Date;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -264,6 +265,17 @@ public class Column {
         
         builder.append(")");
         return builder.toString();
+    }
+
+    public String getTemporal() {
+        if (dataType == Types.DATE) {
+            return "DATE";
+        } else if (dataType == Types.TIME) {
+            return "TIME";
+        } else if (dataType == Types.TIMESTAMP) {
+            return "TIMESTAMP";
+        }
+        return null;
     }
 
     public boolean isPrimaryKey() {

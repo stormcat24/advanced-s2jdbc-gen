@@ -21,6 +21,9 @@ public abstract class ${meta.abstractEntityName} implements Serializable {
     @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 #end
     ${column.columnAnnotation}
+#if(${column.temporal})
+    @javax.persistence.Temporal(javax.persistence.TemporalType.${column.temporal})
+#end
     public ${column.javaType} ${column.fieldName};
 
 #end
