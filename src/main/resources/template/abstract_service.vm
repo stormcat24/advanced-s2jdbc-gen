@@ -11,7 +11,7 @@ import static org.seasar.extension.jdbc.operation.Operations.*;
  * {@link ${entityPackage}.${meta.entityName}}のサービスクラスです。
  *
  */
-public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceName}<${meta.entityName}> {
+public abstract class ${meta.abstractServiceName} extends ${editableServiceName}<${meta.entityName}> {
 
 #foreach(${column} in ${meta.table.columnList})
 #if(${delFlag})
@@ -74,7 +74,7 @@ public abstract class ${meta.abstractServiceName} extends ${abstractS2ServiceNam
      * <p>${index.name}はユニークインデックスです。
      * @return　該当するエンティティのList
      */
-    public ${meta.entityName} ${index.findMethodName}(${index.signature}) {
+    public ${meta.entityName} ${index.findMethodName}(${index.signature}) throws org.seasar.extension.jdbc.exception.SNonUniqueResultException {
         return select().
             where(
                 ${index.whereClause}

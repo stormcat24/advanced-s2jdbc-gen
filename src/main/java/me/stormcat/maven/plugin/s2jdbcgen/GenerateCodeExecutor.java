@@ -140,6 +140,17 @@ public class GenerateCodeExecutor {
         writeContentsToFile(parentServiceFile, "template/parent_service.vm", parentParams, true);
         logger.info(String.format("%sを生成しました。", parentServicePath));
         
+        // Editable
+        String editableServiceName = "EditableS2Service";
+        String editableServicePath = String.format("%s/%s.java", servicePath, editableServiceName);
+        File editableServiceFile = new File(editableServicePath);
+        Map<String, Object> ediPatablerams = new HashMap<String, Object>();
+        ediPatablerams.put("servicePackage", servicePackage);
+        ediPatablerams.put("abstractS2ServiceName", abstractS2ServiceName);
+        ediPatablerams.put("editableServiceName", editableServiceName);
+        writeContentsToFile(editableServiceFile, "template/editable_service.vm", ediPatablerams, false);
+        
+        
         for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
             ModelMeta modelMeta = entry.getValue();
             
@@ -161,6 +172,7 @@ public class GenerateCodeExecutor {
             params.put("meta", modelMeta);
             params.put("delFlag", delFlag);
             params.put("abstractS2ServiceName", abstractS2ServiceName);
+            params.put("editableServiceName", editableServiceName);
             
             logger.info(String.format("*%sに関するファイルを生成します。", modelMeta.getTable().getName()));
             writeContentsToFile(abstractEntityFile, "template/abstract_entity.vm", params, true);

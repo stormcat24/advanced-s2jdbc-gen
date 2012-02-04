@@ -1,0 +1,12 @@
+package ${servicePackage};
+
+/**
+ * 編集可能なサービスの抽象クラスです。
+ * 
+ * @param <ENTITY>
+ *            エンティティの型 
+ * @author advanced-s2jdbc-gen
+ */
+public abstract class ${editableServiceName}<ENTITY> extends ${abstractS2ServiceName}<ENTITY> {
+
+}

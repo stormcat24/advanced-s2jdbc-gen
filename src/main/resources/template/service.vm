@@ -8,7 +8,7 @@ import ${entityPackage}.${meta.entityName};
 import static org.seasar.extension.jdbc.operation.Operations.*;
 
 /**
- * {@link ${entityPackage}.{meta.entityName}}のサービスクラスです。
+ * {@link ${entityPackage}.${meta.entityName}}のサービスクラスです。
  *
  */
 public class ${meta.serviceName} extends ${meta.abstractServiceName} {
