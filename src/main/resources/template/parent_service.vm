@@ -12,6 +12,8 @@ import java.lang.reflect.Field;
  */
 public abstract class ${abstractS2ServiceName}<ENTITY> extends S2AbstractService<ENTITY> {
 
+    private static final String DEL_FLAG_NAME = "${delFlag.name}";
+
 #if(${delFlag})
     /**
      * 論理的に有効化、無効化を切り替えて更新します。
@@ -27,11 +29,11 @@ public abstract class ${abstractS2ServiceName}<ENTITY> extends S2AbstractService
     
     private Field getDelFlagField() {
         try {
-            Field field = entityClass.getField("valid");
+            Field field = entityClass.getField(DEL_FLAG_NAME);
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            throw new RuntimeException("validが存在しないか、アクセスできません。", e);
+            throw new RuntimeException(String.format("%sが存在しないか、アクセスできません。", DEL_FLAG_NAME), e);
         }
     }
     

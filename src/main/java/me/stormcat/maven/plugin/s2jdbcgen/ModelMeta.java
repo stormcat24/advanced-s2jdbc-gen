@@ -65,4 +65,8 @@ public class ModelMeta {
         return fieldName;
     }
     
+    public String getEntityFieldName() {
+        return String.format("%s%s", entityName.substring(0, 1).toLowerCase(), entityName.substring(1, entityName.length()));
+    }
+    
 }

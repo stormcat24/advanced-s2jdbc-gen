@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -151,18 +152,20 @@ public class GenerateCodeExecutor {
         writeContentsToFile(editableServiceFile, "template/editable_service.vm", ediPatablerams, false);
         
         
+        List<ModelMeta> modelMetaItems = new ArrayList<ModelMeta>();
+        
         for (Entry<String, ModelMeta> entry : metaMap.entrySet()) {
             ModelMeta modelMeta = entry.getValue();
             
             String abstractEntityFilePath = String.format("%s/%s.java", entityPath, modelMeta.getAbstractEntityName());
             String entityFilePath = String.format("%s/%s.java", entityPath, modelMeta.getEntityName());
-            String namesFilePath = String.format("%s/%s.java", entityPath, modelMeta.getNamesName());
+            String entityNamesFilePath = String.format("%s/%s.java", entityPath, modelMeta.getNamesName());
             String abstractServiceFilePath = String.format("%s/%s.java", servicePath, modelMeta.getAbstractServiceName());
             String serviceFilePath = String.format("%s/%s.java", servicePath, modelMeta.getServiceName());
             
             File abstractEntityFile = new File(abstractEntityFilePath);
             File entityFile = new File(entityFilePath);
-            File namesFile = new File(namesFilePath);
+            File entityNamesFile = new File(entityNamesFilePath);
             File abstractServiceFile = new File(abstractServiceFilePath);
             File serviceFile = new File(serviceFilePath);
             
@@ -177,10 +180,20 @@ public class GenerateCodeExecutor {
             logger.info(String.format("*%sに関するファイルを生成します。", modelMeta.getTable().getName()));
             writeContentsToFile(abstractEntityFile, "template/abstract_entity.vm", params, true);
             writeContentsToFile(entityFile, "template/entity.vm", params, false);
-            writeContentsToFile(namesFile, "template/names.vm", params, true);
+            writeContentsToFile(entityNamesFile, "template/entity_names.vm", params, true);
             writeContentsToFile(abstractServiceFile, "template/abstract_service.vm", params, true);
             writeContentsToFile(serviceFile, "template/service.vm", params, false);
+            
+            modelMetaItems.add(modelMeta);
         }
+        
+        logger.info("Names.javaを生成します。");
+        String namesFilePath = String.format("%s/Names.java", entityPath);
+        File namesFile = new File(namesFilePath);
+        Map<String, Object> namesParams = new HashMap<String, Object>();
+        namesParams.put("entityPackage", entityPackage);
+        namesParams.put("modelMetaItems", modelMetaItems);
+        writeContentsToFile(namesFile, "template/names.vm", namesParams, true);
         
     }
     
