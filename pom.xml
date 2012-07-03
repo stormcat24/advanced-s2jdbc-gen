@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.stormcat.maven.plugin</groupId>
-  <artifactId>advanced-s2jdbc-gen</artifactId>
+  <artifactId>advanced-s2jdbc-gen-lib</artifactId>
   <version>0.1.2</version>
-  <packaging>maven-plugin</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
