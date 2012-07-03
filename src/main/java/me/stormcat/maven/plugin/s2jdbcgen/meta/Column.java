@@ -1,54 +1,77 @@
 /**
- * 
+ *
  */
 package me.stormcat.maven.plugin.s2jdbcgen.meta;
 
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.stormcat.maven.plugin.s2jdbcgen.ModelMeta;
 import me.stormcat.maven.plugin.s2jdbcgen.Constants.ColumnMetaColumn;
 import me.stormcat.maven.plugin.s2jdbcgen.Constants.MappedType;
+import me.stormcat.maven.plugin.s2jdbcgen.ModelMeta;
 import me.stormcat.maven.plugin.s2jdbcgen.util.StringUtil;
+import net.arnx.jsonic.JSON;
 
 /**
  * @author a.yamada
- *
+ * 
  */
 public class Column {
 
     private final String tableCat;
+
     private final String tableSchem;
+
     private final String tableName;
+
     private final String columnName;
+
     private final int dataType;
+
     private final String typeName;
+
     private final int columnSize;
+
     private final int bufferLength;
+
     private final int decimalDigits;
+
     private final int numPrecRadix;
+
     private final boolean nullable;
+
     private final String remarks;
+
     private final String columnDef;
+
     private final int sqlDataType;
+
     private final String sqlDatetimeSub;
+
     private final int charOctetLength;
+
     private final int ordinalPosition;
+
     private final String scopeCatalog;
+
     private final String scopeSchema;
+
     private final String scopeTable;
+
     private final int sourceDataType;
+
     private final boolean autoincrement;
+
     private final boolean primaryKey;
-    
+
     private final String fieldName;
-    
+
     private ModelMeta referencedModel;
-    
+
     public Column(ResultSet resultSet, Set<String> primaryKeySet) {
         try {
             tableCat = resultSet.getString(ColumnMetaColumn.TABLE_CAT);
@@ -73,7 +96,7 @@ public class Column {
             scopeTable = resultSet.getString(ColumnMetaColumn.SCOPE_TABLE);
             sourceDataType = resultSet.getInt(ColumnMetaColumn.SOURCE_DATA_TYPE);
             autoincrement = resultSet.getBoolean(ColumnMetaColumn.IS_AUTOINCREMENT);
-            
+
             primaryKey = primaryKeySet.contains(columnName);
             fieldName = StringUtil.camelizeMethod(columnName);
         } catch (Exception e) {
@@ -172,11 +195,11 @@ public class Column {
     public String getFieldName() {
         return fieldName;
     }
-    
+
     public boolean isUnsigned() {
         return typeName.contains("UNSIGNED");
     }
-    
+
     public String getJavaType() {
         // TODO mysql限定実装
         switch (dataType) {
@@ -210,7 +233,7 @@ public class Column {
                 // TODO カラムの文字セットが BINARY の場合は byte[] が戻される
                 return MappedType.STRING;
             case Types.VARCHAR:
-             // TODO カラムの文字セットが BINARY の場合は byte[] が戻される
+                // TODO カラムの文字セットが BINARY の場合は byte[] が戻される
                 return MappedType.STRING;
             case Types.BINARY:
                 return MappedType.BYTE_A;
@@ -224,24 +247,16 @@ public class Column {
                 return MappedType.STRING;
         }
     }
-    
+
     public boolean isStringType() {
         // TODO mysql限定実装
-        return (dataType == Types.CHAR ||
-            dataType == Types.VARCHAR ||
-            dataType == Types.LONGVARCHAR);
+        return (dataType == Types.CHAR || dataType == Types.VARCHAR || dataType == Types.LONGVARCHAR);
     }
-    
+
     public boolean isNumberType() {
-        return 
-            (
-                dataType == Types.TINYINT ||
-                dataType == Types.SMALLINT ||
-                dataType == Types.INTEGER ||
-                dataType == Types.BIGINT
-            );
+        return (dataType == Types.TINYINT || dataType == Types.SMALLINT || dataType == Types.INTEGER || dataType == Types.BIGINT);
     }
-    
+
     public String getColumnAnnotation() {
         StringBuilder builder = new StringBuilder("@javax.persistence.Column(");
         // nullable
@@ -262,7 +277,7 @@ public class Column {
         }
         // precision
         // scale
-        
+
         builder.append(")");
         return builder.toString();
     }
@@ -281,7 +296,7 @@ public class Column {
     public boolean isPrimaryKey() {
         return primaryKey;
     }
-    
+
     public String getReferenceTableName() {
         // TODO 外部キー実装
         if (StringUtil.isBlank(remarks)) {
@@ -292,6 +307,23 @@ public class Column {
         return matcher.find() ? matcher.group(1) : null;
     }
 
+    public CodeDef getCodeDef() {
+        if (StringUtil.isBlank(remarks)) {
+            return null;
+        }
+
+        try {
+            CodeValue[] values = JSON.decode(remarks, CodeValue[].class);
+            String enumName = org.seasar.util.lang.StringUtil.capitalize(getFieldName());
+            CodeDef codeDef = new CodeDef(enumName, getJavaType());
+            codeDef.addCodeValues(Arrays.asList(values));
+
+            return codeDef;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public ModelMeta getReferencedModel() {
         return referencedModel;
     }
@@ -299,13 +331,13 @@ public class Column {
     public void setReferencedModel(ModelMeta referencedModel) {
         this.referencedModel = referencedModel;
     }
-    
+
     public String getReferenceFieldName() {
         if (referencedModel == null) {
             return null;
         }
-        return String.format("%sBy%s%s", referencedModel.getFieldName(), 
-                fieldName.substring(0, 1).toUpperCase(), fieldName.substring(1, fieldName.length()));
+        return String.format("%sBy%s%s", referencedModel.getFieldName(), fieldName.substring(0, 1).toUpperCase(),
+                fieldName.substring(1, fieldName.length()));
     }
 
 }
