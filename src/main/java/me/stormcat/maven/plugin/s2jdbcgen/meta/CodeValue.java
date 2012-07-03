@@ -10,6 +10,8 @@ public class CodeValue {
 
     private String label;
 
+    private String field;
+
     public CodeValue() {
 
     }
@@ -19,9 +21,10 @@ public class CodeValue {
      * @param value
      * @param label
      */
-    public CodeValue(String value, String label) {
+    public CodeValue(String value, String label, String field) {
         this.value = value;
         this.label = label;
+        this.field = field;
     }
 
     /**
@@ -54,6 +57,22 @@ public class CodeValue {
      */
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    /**
+     * field を取得します。
+     * @return field
+     */
+    public String getField() {
+        return field;
+    }
+
+    /**
+     * fieldを設定します。
+     * @param field field
+     */
+    public void setField(String field) {
+        this.field = field;
     }
 
 }
